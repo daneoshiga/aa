@@ -1,11 +1,5 @@
-AA
-==
-
-Introduction
-============
-
-aa    = Main interface (aa start, aa post 'foo', aa stop)
-aad   = Daemon started by aa (or could we use just threads from aa?)
+oooOoOo[ AA ]oOoOooo
+====================
 
 Installing
 ==========
@@ -18,17 +12,36 @@ Or just create a link:
 
     $ sudo ln -s /path/to/aa.py /usr/local/bin/aa
 
-Using
+Configure your nickname and email:
+
+    $ aa config user.nickname <YOUR NICKNAME HERE>
+    $ aa config user.email <YOUR EMAIL HERE>
+
+Installing dependencies:
+
+	$ sudo apt-get install libnotify-bin espeak
+
+Usage
 =====
 
 Now you can use:
 
-    $ aa start                    ... start your session
-    $ aa post 'foo'               ... post 'foo'
-    $ aa stop                     ... stop your session
-    $ aa config nickname yournick ... set your nickname
+    $ aa start                        ... starts your session
+    $ aa post foo                     ... posts foo
+    $ aa shout foo                    ... posts foo and sends message to server
+    $ aa stop                         ... stops your session
+    $ aa config <attribute> <value>   ... sets some attribute
+    $ aa status|st                    ... checks if daemon is running
 
 For now, just 'aa stop' will send your 'work log' to the server. You
-can see your log at http://nightsc.com.br/aa
+can see your log at http://nightsc.com.br/aa (or any server configured using
+aa config server.url <URL SERVER HERE>).
 
- 
+Configuring
+===========
+
+Configuration attributes currently in use:
+
+    user.nickname
+    user.email
+    server.url
