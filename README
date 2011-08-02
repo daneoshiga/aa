@@ -12,14 +12,17 @@ Or just create a link:
 
     $ sudo ln -s /path/to/aa.py /usr/local/bin/aa
 
-Configure your nickname and email:
+Configure your nickname:
 
     $ aa config user.nickname <YOUR NICKNAME HERE>
-    $ aa config user.email <YOUR EMAIL HERE>
 
-Installing dependencies:
+And the AA-Web (the web server) URL:
 
-	$ sudo apt-get install libnotify-bin espeak
+    $ aa config server.url http://192.168.6.103/macambira_aa/novo_log.php
+
+Install dependencies:
+
+    $ sudo apt-get install libnotify-bin espeak
 
 Usage
 =====

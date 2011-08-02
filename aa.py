@@ -29,10 +29,12 @@ Usage:
 
    aa config <config> <value> ... sets the config value
    aa start                   ... starts the work session of the day
+   aa stop                    ... stops the work session
    aa shout <message>         ... alerts what he is doing now (online)
    aa post <message>          ... alerts what he is doing now (offline)
-   aa stop                    ... stops the work session of the day
+   aa push                    ... pushes the log to the server
    aa status                  ... checks daemon status
+   aa logview                 ... shows your current log
 
 Remember, you have to configure your nickname before start:
 
@@ -277,8 +279,10 @@ class AADaemon(Daemon):
             if dormir > 0:
                 time.sleep(float(dormir))
                 atual = time.time()
-                self.notify('Tick-tack... '+str(round((atual-inicio)/60.0,2))+\
-                            ' minutos')
+                minutos = int((atual-inicio)/60)
+                segundos = int((atual-inicio)%60)
+                self.notify('Tick-tack... '+str(minutos)+\
+                            ' minutos e '+str(segundos)+' segundos' )
                 self.logger.log('notify') # precisamos notificar isso no log?
                 # FIXME: notificar a cada X minutos e informar quanto tempo falta
                 # FIXME: como verificar que o usuario logou? fica a cargo do servidor?
@@ -397,12 +401,10 @@ if __name__ == "__main__":
         elif args[0] in ['stop','fim', 'finaliza', 'termina', 'end']:
             # log a stop session action
             logger.log('stop')
-            # send all the lines at ~/.aa.log file
-            http_sender.send_log()
             # the daemon notifies that the session is finished
-            daemon.notify('Your session has ended. See ya!')
+            daemon.notify('Your session has finished. Dont forget to record your screencast.')
             # inform to the user at console
-            print '[AA] Your session has finished. See ya!'
+            print '[AA] Your session has finished. Dont forget to record your screencast.'
             # kill the daemon
             daemon.stop()
 
@@ -431,12 +433,28 @@ if __name__ == "__main__":
         # CONFIG
         elif args[0] in ['config', 'configura', 'seta'] and args[1]:
             config(sys.argv[2:])
+
+        # STATUS
         elif args[0] in ['status', 'st']:
             if daemon.getpid() is not None:
                 print '[AA] daemon is up and running... (pid: %s)' % daemon.getpid()
             else:
                 print '[AA] Oh nooo! daemon is not running... Get back to work!!!'
 
+        # LOGVIEW
+        elif args[0] in ['logview', 'viewlog']:
+            os.system('less ' + os.getenv('HOME') + '/.aa.log')
+
+        # PUSH
+        elif args[0] in ['push']:
+            # log a push action
+            logger.log('push')
+            # send all the lines at ~/.aa.log file
+            http_sender.send_log()
+            # notify to the user the push action
+            daemon.notify('Session pushed to the server. Now get away of this fucking laptop and go fuck some pussies.')
+            print '[AA] Session pushed to the server.'
+                
         # UNKNOWN OPTION
         else:
             print'[AA] Unknown option: "%s". Please, try again!' % args[0]
